@@ -1,13 +1,8 @@
+import fitz  # PyMuPDF
 from flask import Blueprint, request, jsonify
 
 upload_bp = Blueprint('upload', __name__)
 
-# Test route (important for debugging)
-@upload_bp.route("/test", methods=["GET"])
-def test():
-    return "Upload route is working"
-
-# Upload route
 @upload_bp.route("/upload", methods=["POST"])
 def upload_resume():
     if 'file' not in request.files:
@@ -18,8 +13,18 @@ def upload_resume():
     if file.filename == "":
         return jsonify({"error": "Empty filename"}), 400
 
-    # Temporary logic (you will replace later)
-    return jsonify({
-        "message": "File received successfully",
-        "filename": file.filename
-    })
+    try:
+        # Read PDF
+        pdf = fitz.open(stream=file.read(), filetype="pdf")
+        text = ""
+
+        for page in pdf:
+            text += page.get_text()
+
+        return jsonify({
+            "message": "Resume processed",
+            "extracted_text": text[:1000]  # limit output
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
