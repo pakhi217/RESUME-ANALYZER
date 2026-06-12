@@ -195,5 +195,4 @@ This project is open-source and available under the MIT License
 
 This project is built to **guide students with clarity**, not just analyze resumes.
 The goal is simple:
-
 > Replace confusion with direction.
